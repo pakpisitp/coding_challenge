@@ -14,7 +14,7 @@ class CartService extends GetxService {
   /// INTENTIONAL BUG (Task B3): adds original price instead of discounted price.
   int get cartTotal => _items.fold(
         0,
-        (sum, item) => sum + (item.offer.originalPrice * item.quantity),
+        (sum, item) => sum + (item.offer.discountedPrice * item.quantity),
       );
 
   @override

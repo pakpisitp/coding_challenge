@@ -68,6 +68,17 @@ class HomeScreenController extends GetxController {
   Future<void> toggleFavorite(String offerId) async {
     await _offerRepo.toggleFavorite(offerId);
     // INTENTIONAL GAP (Task B2): list does not update after toggle.
+    final index = _offers.indexWhere((o) => o.id == offerId);
+    if (index != -1) {
+      final nowFavorite = !_offers[index].isFavorite;
+      _offers[index] = _offers[index].copyWith(isFavorite: nowFavorite);
+      Get.snackbar(
+        nowFavorite ? 'favorite_saved'.tr : 'favorite_removed'.tr,
+        '',
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 2),
+      );
+    }
   }
 
   /// INTENTIONAL GAP (Task A3): pull-to-refresh not wired in UI — candidate connects this.
