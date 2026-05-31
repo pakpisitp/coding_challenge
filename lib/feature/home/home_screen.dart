@@ -36,6 +36,7 @@ class HomeScreen extends GetView<HomeScreenController> {
 
   Widget _buildSearchBar() {
     return TextField(
+      onChanged: controller.setSearchQuery,
       decoration: InputDecoration(
         hintText: 'search_hint'.tr,
         prefixIcon: const Icon(Icons.search),
@@ -91,18 +92,31 @@ class HomeScreen extends GetView<HomeScreenController> {
       final offers = controller.visibleOffers;
       // INTENTIONAL GAP (Task A4): no empty state widget when offers.isEmpty.
       if (offers.isEmpty) {
-        return const SizedBox.shrink();
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.storefront_outlined, size: 64.sp, color: AppColors.textSecondary),
+              SizedBox(height: 16.h),
+              Text('empty_offers'.tr, style: Styles.regularText14(), textAlign: TextAlign.center),
+            ],
+          ),
+        );
       }
 
-      return ListView.builder(
-        itemCount: offers.length,
-        itemBuilder: (context, index) {
-          final offer = offers[index];
-          return OfferCard(
-            offer: offer,
-            onFavoriteTap: () => controller.toggleFavorite(offer.id),
-          );
-        },
+      return RefreshIndicator(
+        onRefresh: controller.onRefresh,
+        color: AppColors.primary,
+        child: ListView.builder(
+          itemCount: offers.length,
+          itemBuilder: (context, index) {
+            final offer = offers[index];
+            return OfferCard(
+              offer: offer,
+              onFavoriteTap: () => controller.toggleFavorite(offer.id),
+            );
+          },
+        ),
       );
     });
   }

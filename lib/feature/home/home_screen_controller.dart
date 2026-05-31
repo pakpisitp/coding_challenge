@@ -21,7 +21,19 @@ class HomeScreenController extends GetxController {
   String get searchQuery => _searchQuery.value;
 
   /// INTENTIONAL GAP (Task A1): filter + search not applied — returns all offers.
-  List<OfferModel> get visibleOffers => _offers;
+  List<OfferModel> get visibleOffers {
+    final query = _searchQuery.value.toLowerCase();
+    final filter = _activeFilter.value;
+
+    return _offers.where((offer) {
+      final matchesCategory =
+          filter == OfferFilter.all || offer.category == filter.name;
+      final matchesSearch = query.isEmpty ||
+          offer.title.toLowerCase().contains(query) ||
+          offer.storeName.toLowerCase().contains(query);
+      return matchesCategory && matchesSearch;
+    }).toList();
+  }
 
   @override
   void onInit() {

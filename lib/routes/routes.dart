@@ -1,6 +1,7 @@
 import 'package:flutter_challenge/binding/cart_screen_bindings.dart';
 import 'package:flutter_challenge/binding/home_screen_bindings.dart';
 import 'package:flutter_challenge/binding/initial_loading_bindings.dart';
+import 'package:flutter_challenge/binding/offer_details_screen_bindings.dart';
 import 'package:flutter_challenge/binding/profile_screen_bindings.dart';
 import 'package:flutter_challenge/feature/cart/cart_screen.dart';
 import 'package:flutter_challenge/feature/home/home_screen.dart';
@@ -31,6 +32,7 @@ class Routes {
         GetPage(
           name: offerDetails,
           page: () => const OfferDetailsScreen(),
+          binding: OfferDetailsScreenBindings(),
         ),
         GetPage(
           name: cart,
