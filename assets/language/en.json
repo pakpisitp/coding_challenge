@@ -20,5 +20,6 @@
   "filter_all": "All",
   "filter_bakery": "Bakery",
   "filter_cafe": "Cafe",
-  "filter_market": "Market"
+  "filter_market": "Market",
+  "filter_favorites": "Favorites only"
 }

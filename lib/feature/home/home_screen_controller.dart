@@ -1,9 +1,11 @@
 import 'package:flutter_challenge/model/offer_model.dart';
 import 'package:flutter_challenge/repository/offer_repo.dart';
 import 'package:flutter_challenge/service/the_exceptions.dart';
+import 'package:flutter_challenge/util/constants/app_constants.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-enum OfferFilter { all, bakery, cafe, market }
+enum OfferFilter { all, bakery, cafe, market, favorites }
 
 class HomeScreenController extends GetxController {
   final OfferRepo _offerRepo = Get.find<OfferRepo>();
@@ -26,8 +28,10 @@ class HomeScreenController extends GetxController {
     final filter = _activeFilter.value;
 
     return _offers.where((offer) {
-      final matchesCategory =
-          filter == OfferFilter.all || offer.category == filter.name;
+      final matchesCategory = filter == OfferFilter.all ||
+          (filter == OfferFilter.favorites
+              ? offer.isFavorite
+              : offer.category == filter.name);
       final matchesSearch = query.isEmpty ||
           offer.title.toLowerCase().contains(query) ||
           offer.storeName.toLowerCase().contains(query);
@@ -38,7 +42,19 @@ class HomeScreenController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _loadPersistedFilter();
     fetchOffers();
+  }
+
+  void _loadPersistedFilter() {
+    final prefs = Get.find<SharedPreferences>();
+    final saved = prefs.getString(AppConstants.ACTIVE_FILTER_PREF_KEY);
+    if (saved != null) {
+      _activeFilter.value = OfferFilter.values.firstWhere(
+        (f) => f.name == saved,
+        orElse: () => OfferFilter.all,
+      );
+    }
   }
 
   Future<void> fetchOffers() async {
@@ -58,6 +74,10 @@ class HomeScreenController extends GetxController {
   void setFilter(OfferFilter filter) {
     _activeFilter.value = filter;
     // INTENTIONAL GAP (Task A1): candidate should refresh visibleOffers.
+    Get.find<SharedPreferences>().setString(
+      AppConstants.ACTIVE_FILTER_PREF_KEY,
+      filter.name,
+    );
   }
 
   void setSearchQuery(String value) {
